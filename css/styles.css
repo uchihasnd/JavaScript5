@@ -1,0 +1,20 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  margin: 0 auto;
+}
+
+.artist-container {
+  margin: 0 50px;
+}
+
+.album-table {
+  width: 100%;
+}
