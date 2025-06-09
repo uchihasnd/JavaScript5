@@ -1,3 +1,10 @@
+:root {
+  --background: #000000;
+  --white: #ffffff;
+  --gray: #b3b3b3;
+  --button-primary: #1ed760;
+}
+
 *,
 *::before,
 *::after {
@@ -6,15 +13,52 @@
   padding: 0;
 }
 
-body {
+.body-spotify {
   font-family: "Montserrat", sans-serif;
   margin: 0 auto;
+  background-color: var(--background);
+  color: var(--white);
 }
 
 .artist-container {
   margin: 0 50px;
 }
 
+.album-info {
+  margin: 50px 0 20px 0;
+}
+
+.album-details {
+  margin-bottom: 20px;
+}
+
+.album-play-button {
+  background-color: var(--white);
+  padding: 5px;
+  border-radius: 50%;
+  border: none;
+}
+
+.album-play-button:hover {
+  cursor: pointer;
+}
+
 .album-table {
   width: 100%;
+}
+
+.album-table thead {
+  font-size: 0.75rem;
+  color: var(--gray);
+  font-weight: bold;
+  text-align: left;
+  border-bottom: 1px solid var(--gray);
+}
+
+.row-album td {
+  padding: 5px 0;
+}
+
+.album-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }

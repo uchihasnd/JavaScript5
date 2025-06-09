@@ -36,7 +36,7 @@ const createTrackRow = ({
   ];
 
   const row = document.createElement("tr");
-  row.classList.add(".row-album")
+  row.classList.add("row-album");
 
   for (let i = 0; i < rowInfo.length; i++) {
     const cell = document.createElement("td");
@@ -50,8 +50,11 @@ const createTrackRow = ({
 
 //Function to create the table by adding the headers and body of the table with the rows
 const createAlbumTable = (tracks) => {
+  const divTable = document.createElement("div");
+  divTable.classList.add("table-container");
+
   const table = document.createElement("table");
-  table.classList.add("album-table")
+  table.classList.add("album-table");
   table.appendChild(createTableHeaders());
 
   const tbody = document.createElement("tbody");
@@ -60,11 +63,14 @@ const createAlbumTable = (tracks) => {
   });
 
   table.appendChild(tbody);
-  return table;
+  divTable.appendChild(table);
+
+  return divTable;
 };
 
 const artistPage = () => {
   const body = document.getElementById("body-spotify");
+  body.classList.add("body-spotify");
 
   const { artistUnion } = data;
   const { profile, stats, discography } = artistUnion;
@@ -80,7 +86,7 @@ const artistPage = () => {
 
   //Artist Name
   const artistTitle = document.createElement("h1");
-  artistTitle.classList.add("artist-title")
+  artistTitle.classList.add("artist-title");
   artistTitle.textContent = artistName;
   header.appendChild(artistTitle);
 
@@ -99,19 +105,53 @@ const artistPage = () => {
 
   albums.items.forEach(({ releases }) => {
     const { items } = releases;
-    const { name: albumName, coverArt, tracks } = items[0];
+    const { name: albumName, coverArt, tracks, type, date } = items[0];
 
+    //Div container for the album
     const albumInfo = document.createElement("div");
+    albumInfo.classList.add("album-info");
+
+    //Container for the image and details
+    const albumContent = document.createElement("div");
+    albumContent.classList.add("album-content");
+
+    //Div for the album img
+    const divAlbumInfo = document.createElement("div");
+    divAlbumInfo.classList.add("album-image-container");
 
     const { url: coverUrl } = coverArt.sources[1];
     const albumCover = document.createElement("img");
     albumCover.src = coverUrl;
-    albumInfo.appendChild(albumCover);
+    divAlbumInfo.appendChild(albumCover);
 
+    albumContent.appendChild(divAlbumInfo);
+
+    //Div for album details
+    const albumDetails = document.createElement("div");
+    albumDetails.classList.add("album-details");
+
+    //Album title
     const albumTitle = document.createElement("h2");
     albumTitle.classList.add("album-title");
     albumTitle.textContent = albumName;
-    albumInfo.appendChild(albumTitle);
+    albumDetails.appendChild(albumTitle);
+
+    //Album details
+    const pDetails = document.createElement("p");
+    const { year } = date;
+    const { totalCount } = tracks;
+    pDetails.textContent = `${type} • ${year} • ${totalCount} tracks`;
+    albumDetails.appendChild(pDetails);
+
+    albumContent.appendChild(albumDetails);
+
+    albumInfo.appendChild(albumContent);
+
+    //Album button
+    const playButton = document.createElement("button");
+    playButton.classList.add("album-play-button");
+    playButton.innerHTML = `<span class="material-icons">play_arrow</span>`;
+    albumDetails.appendChild(playButton);
 
     albumInfo.appendChild(createAlbumTable(tracks));
     albumContainer.appendChild(albumInfo);
