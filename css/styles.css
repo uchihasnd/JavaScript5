@@ -3,6 +3,8 @@
   --white: #ffffff;
   --gray: #b3b3b3;
   --button-primary: #1ed760;
+  --font-size-small: 12px;
+  --font-size-big: 28px;
 }
 
 *,
@@ -14,16 +16,58 @@
 }
 
 .body-spotify {
-  font-family: "Montserrat", sans-serif;
-  margin: 0 auto;
   background-color: var(--background);
   color: var(--white);
+  font-family: "Montserrat", sans-serif;
+  margin: 0 auto;
 }
 
+/* Header */
+.header-artist {
+  height: 400px;
+}
+
+/* Album information */
+
+.album-content {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.album-title {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.album-title,
+.details,
+.album-play-button {
+  margin: 5px 0;
+}
+
+.album-title:hover {
+  text-decoration: underline;
+}
+
+/* Album content */
+
+.cover-album {
+  width: 136px;
+  height: 136px;
+}
+
+.album-title {
+  font-size: var(--font-size-big);
+}
+
+/* Container for the albums */
 .artist-container {
   margin: 0 50px;
 }
 
+/* Container for each album */
 .album-info {
   margin: 50px 0 20px 0;
 }
@@ -32,33 +76,74 @@
   margin-bottom: 20px;
 }
 
+.details {
+  text-transform: lowercase;
+  font-size: var(--font-size-small);
+}
+
+.details:first-line {
+  text-transform: capitalize;
+}
+
+/* Buttons */
 .album-play-button {
   background-color: var(--white);
-  padding: 5px;
   border-radius: 50%;
   border: none;
+  padding: 2.5px;
+  margin-right: 5px;
 }
 
 .album-play-button:hover {
   cursor: pointer;
+  transform: scale(1.04);
 }
 
+.album-library-button,
+.album-download-button,
+.album-options-button {
+  background: none;
+  color: var(--white);
+  border-radius: 50%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+/* Table */
 .album-table {
+  border-collapse: collapse;
   width: 100%;
 }
 
-.album-table thead {
-  font-size: 0.75rem;
-  color: var(--gray);
-  font-weight: bold;
-  text-align: left;
-  border-bottom: 1px solid var(--gray);
+.table-header-cell {
+  padding: 10px 0;
 }
 
-.row-album td {
+.header-table {
+  border-bottom: 1px solid var(--gray);
+  color: var(--gray);
+  font-size: var(--font-size-small);
+  font-weight: bold;
+  text-align: left;
+}
+
+.table-header-cell:nth-child(3),
+.table-header-cell:nth-child(4) {
+  width: 200px;
+}
+
+.album-cell {
   padding: 5px 0;
 }
 
-.album-table tr:hover {
+.row-album:hover {
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+.band-name {
+  color: var(--gray);
+  font-size: var(--font-size-small);
 }

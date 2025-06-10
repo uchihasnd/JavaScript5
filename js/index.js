@@ -1,8 +1,10 @@
 import { data } from "./data.js";
+import { convertMilliseconds } from "./millisecondsConverter.js";
 
 //Function to create table headers
 const createTableHeaders = () => {
   const thead = document.createElement("thead");
+  thead.classList.add("header-table");
   const headerRow = document.createElement("tr");
   const headers = ["#", "Title", "Plays", "Duration"];
 
@@ -10,6 +12,7 @@ const createTableHeaders = () => {
 
   for (let i = 0; i < headers.length; i++) {
     const th = document.createElement("th");
+    th.classList.add("table-header-cell");
     th.textContent = headers[i];
     headerRow.appendChild(th);
   }
@@ -23,10 +26,10 @@ const createTrackRow = ({
   name: trackName,
   playcount,
   duration,
+  artists,
 }) => {
   const { totalMilliseconds } = duration;
-  const minutes = Math.floor(totalMilliseconds / 60000);
-  const seconds = ((totalMilliseconds / 1000) % 60).toFixed(0).padStart(2, "0");
+  const { minutes, seconds } = convertMilliseconds(totalMilliseconds);
 
   const rowInfo = [
     trackNumber,
@@ -41,7 +44,29 @@ const createTrackRow = ({
   for (let i = 0; i < rowInfo.length; i++) {
     const cell = document.createElement("td");
     cell.classList.add("album-cell");
-    cell.textContent = rowInfo[i];
+
+    if (i === 1) {
+      const songTitle = document.createElement("span");
+      songTitle.classList.add("song-title");
+      songTitle.textContent = rowInfo[i];
+
+      const bandName = document.createElement("span");
+      bandName.classList.add("band-name");
+
+      const [
+        {
+          profile: { name: artistName },
+        },
+      ] = artists.items;
+      bandName.textContent = artistName;
+
+      cell.appendChild(songTitle);
+      cell.appendChild(document.createElement("br"));
+      cell.appendChild(bandName);
+    } else {
+      cell.textContent = rowInfo[i];
+    }
+
     row.appendChild(cell);
   }
 
@@ -79,6 +104,12 @@ const artistPage = () => {
   const { albums } = discography;
 
   const header = document.createElement("header");
+  const coverImageUrl = artistUnion.visuals.headerImage.sources[0].url;
+
+  header.style.backgroundImage = `url(${coverImageUrl})`;
+  header.style.backgroundSize = "cover";
+  header.style.backgroundPosition = "center";
+  header.classList.add("header-artist");
   //Verified
   const verifiedArtist = document.createElement("span");
   verifiedArtist.textContent = verified ? "✔ Verified Artist" : "Unverified";
@@ -119,9 +150,11 @@ const artistPage = () => {
     const divAlbumInfo = document.createElement("div");
     divAlbumInfo.classList.add("album-image-container");
 
-    const { url: coverUrl } = coverArt.sources[1];
+    const { url: coverUrl } = coverArt.sources[0];
     const albumCover = document.createElement("img");
     albumCover.src = coverUrl;
+    albumCover.setAttribute("alt", "Album cover");
+    albumCover.classList.add("cover-album");
     divAlbumInfo.appendChild(albumCover);
 
     albumContent.appendChild(divAlbumInfo);
@@ -131,13 +164,14 @@ const artistPage = () => {
     albumDetails.classList.add("album-details");
 
     //Album title
-    const albumTitle = document.createElement("h2");
+    const albumTitle = document.createElement("a");
     albumTitle.classList.add("album-title");
     albumTitle.textContent = albumName;
     albumDetails.appendChild(albumTitle);
 
     //Album details
     const pDetails = document.createElement("p");
+    pDetails.classList.add("details");
     const { year } = date;
     const { totalCount } = tracks;
     pDetails.textContent = `${type} • ${year} • ${totalCount} tracks`;
@@ -147,11 +181,26 @@ const artistPage = () => {
 
     albumInfo.appendChild(albumContent);
 
-    //Album button
+    //Album play button
     const playButton = document.createElement("button");
     playButton.classList.add("album-play-button");
-    playButton.innerHTML = `<span class="material-icons">play_arrow</span>`;
+    playButton.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
     albumDetails.appendChild(playButton);
+    //Album library button
+    const libraryButton = document.createElement("button");
+    libraryButton.classList.add("album-library-button");
+    libraryButton.innerHTML = `<span class="material-symbols-outlined">add_circle</span>`;
+    albumDetails.appendChild(libraryButton);
+    //Album download button
+    const downloadButton = document.createElement("button");
+    downloadButton.classList.add("album-download-button");
+    downloadButton.innerHTML = `<span class="material-symbols-outlined">enable</span>`;
+    albumDetails.appendChild(downloadButton);
+    //Album 'more options' button
+    const optionsButton = document.createElement("button");
+    optionsButton.classList.add("album-options-button");
+    optionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
+    albumDetails.appendChild(optionsButton);
 
     albumInfo.appendChild(createAlbumTable(tracks));
     albumContainer.appendChild(albumInfo);
