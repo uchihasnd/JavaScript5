@@ -20,6 +20,42 @@ const createTableHeaders = () => {
   return thead;
 };
 
+const createSongArtistCell = (trackName, artists) => {
+  const songCell = document.createElement("td");
+  songCell.classList.add("album-cell");
+
+  const [
+    {
+      profile: { name: artistName },
+    },
+  ] = artists.items || [{ profile: { name: "Unknown artist" } }];
+
+  if (trackName && artistName) {
+    const song = document.createElement("span");
+    song.classList.add("song-name");
+    song.textContent = trackName;
+
+    const artist = document.createElement("span");
+    artist.classList.add("band-name");
+    artist.textContent = artistName;
+
+    songCell.appendChild(song);
+    songCell.appendChild(document.createElement("br"));
+    songCell.appendChild(artist);
+  } else if (trackName) {
+    songCell.textContent = trackName;
+  } else if (artistName) {
+    const artist = document.createElement("span");
+    artist.classList.add("band-name");
+    artist.textContent = artistName;
+    songCell.appendChild(artist);
+  } else {
+    songCell.textContent = "Unknown song";
+  }
+
+  return songCell;
+};
+
 //Function to create each row of the table with the track number, name of the song, playcount and duration
 const createTrackRow = ({
   trackNumber,
@@ -42,28 +78,13 @@ const createTrackRow = ({
   row.classList.add("row-album");
 
   for (let i = 0; i < rowInfo.length; i++) {
-    const cell = document.createElement("td");
-    cell.classList.add("album-cell");
+    let cell =
+      i === 1
+        ? createSongArtistCell(trackName, artists)
+        : document.createElement("td");
 
-    if (i === 1) {
-      const songTitle = document.createElement("span");
-      songTitle.classList.add("song-title");
-      songTitle.textContent = rowInfo[i];
-
-      const bandName = document.createElement("span");
-      bandName.classList.add("band-name");
-
-      const [
-        {
-          profile: { name: artistName },
-        },
-      ] = artists.items;
-      bandName.textContent = artistName;
-
-      cell.appendChild(songTitle);
-      cell.appendChild(document.createElement("br"));
-      cell.appendChild(bandName);
-    } else {
+    if (i !== 1) {
+      cell.classList.add("album-cell");
       cell.textContent = rowInfo[i];
     }
 
@@ -112,17 +133,27 @@ const artistPage = () => {
   header.classList.add("header-artist");
   //Verified
   const verifiedArtist = document.createElement("span");
-  verifiedArtist.textContent = verified ? "✔ Verified Artist" : "Unverified";
+  verifiedArtist.classList.add("header-info");
+  //Veriffied Icon
+  const verifiedIcon = document.createElement("span");
+  verifiedIcon.classList.add("material-symbols-outlined", "verified-icon");
+  verifiedIcon.textContent = "verified";
+  const text = document.createElement("span");
+  text.textContent = verified ? " Verified Artist" : " Unverified";
+  text.classList.add("info-header-text");
+  verifiedArtist.appendChild(verifiedIcon);
+  verifiedArtist.appendChild(text);
   header.appendChild(verifiedArtist);
 
   //Artist Name
   const artistTitle = document.createElement("h1");
-  artistTitle.classList.add("artist-title");
+  artistTitle.classList.add("artist-title", "header-info");
   artistTitle.textContent = artistName;
   header.appendChild(artistTitle);
 
   //Monthly listeners
   const listenersInfo = document.createElement("span");
+  listenersInfo.classList.add("header-info", "info-header-text");
   listenersInfo.textContent = `${monthlyListeners.toLocaleString()} monthly listeners`;
   header.appendChild(listenersInfo);
 
