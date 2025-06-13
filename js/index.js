@@ -20,37 +20,21 @@ const createTableHeaders = () => {
   return thead;
 };
 
-const createSongArtistCell = (trackName, artists) => {
+const createSongArtistCell = (trackName, artistName) => {
   const songCell = document.createElement("td");
   songCell.classList.add("album-cell");
 
-  const [
-    {
-      profile: { name: artistName },
-    },
-  ] = artists.items || [{ profile: { name: "Unknown artist" } }];
-
-  if (trackName && artistName) {
-    const song = document.createElement("span");
-    song.classList.add("song-name");
-    song.textContent = trackName;
-
-    const artist = document.createElement("span");
-    artist.classList.add("band-name");
-    artist.textContent = artistName;
-
-    songCell.appendChild(song);
-    songCell.appendChild(document.createElement("br"));
-    songCell.appendChild(artist);
-  } else if (trackName) {
+  if (!trackName && !artistName) {
+    songCell.textContent = "Unknown song"
+  } else if (trackName || artistName) {
     songCell.textContent = trackName;
-  } else if (artistName) {
+
+    songCell.appendChild(document.createElement("br"));
+
     const artist = document.createElement("span");
     artist.classList.add("band-name");
     artist.textContent = artistName;
     songCell.appendChild(artist);
-  } else {
-    songCell.textContent = "Unknown song";
   }
 
   return songCell;
@@ -77,10 +61,16 @@ const createTrackRow = ({
   const row = document.createElement("tr");
   row.classList.add("row-album");
 
+  const [
+    {
+      profile: { name: artistName },
+    },
+  ] = artists.items;
+
   for (let i = 0; i < rowInfo.length; i++) {
     let cell =
       i === 1
-        ? createSongArtistCell(trackName, artists)
+        ? createSongArtistCell(trackName, artistName)
         : document.createElement("td");
 
     if (i !== 1) {
@@ -136,7 +126,11 @@ const artistPage = () => {
   verifiedArtist.classList.add("header-info");
   //Veriffied Icon
   const verifiedIcon = document.createElement("span");
-  verifiedIcon.classList.add("material-symbols-outlined", "verified-icon");
+  verifiedIcon.classList.add(
+    "material-symbols-outlined",
+    "verified-icon",
+    "filled-icon"
+  );
   verifiedIcon.textContent = "verified";
   const text = document.createElement("span");
   text.textContent = verified ? " Verified Artist" : " Unverified";
@@ -158,6 +152,31 @@ const artistPage = () => {
   header.appendChild(listenersInfo);
 
   body.appendChild(header);
+
+  //Container for the play button, the follow button
+  const divFollow = document.createElement("div");
+  divFollow.classList.add("div-play-follow");
+  //Button play
+  const buttonPlayAll = document.createElement("button");
+  buttonPlayAll.classList.add(
+    "button-play-all",
+    "filled-icon",
+    "divFollow-element"
+  );
+  buttonPlayAll.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
+  divFollow.appendChild(buttonPlayAll);
+  //Button follow artist
+  const buttonFollow = document.createElement("button");
+  buttonFollow.classList.add("button-follow", "divFollow-element");
+  buttonFollow.textContent = "Follow";
+  divFollow.appendChild(buttonFollow);
+  //Button more options
+  const moreOptionsButton = document.createElement("button");
+  moreOptionsButton.classList.add("album-options-button", "divFollow-element");
+  moreOptionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
+  divFollow.appendChild(moreOptionsButton);
+
+  body.appendChild(divFollow);
 
   //Container for the albums
   const albumContainer = document.createElement("div");
@@ -214,7 +233,7 @@ const artistPage = () => {
 
     //Album play button
     const playButton = document.createElement("button");
-    playButton.classList.add("album-play-button");
+    playButton.classList.add("album-play-button", "filled-icon");
     playButton.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
     albumDetails.appendChild(playButton);
     //Album library button
