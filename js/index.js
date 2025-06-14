@@ -20,22 +20,34 @@ const createTableHeaders = () => {
   return thead;
 };
 
+//Function to insert the name of the song and/or artist
 const createSongArtistCell = (trackName, artistName) => {
   const songCell = document.createElement("td");
   songCell.classList.add("album-cell");
 
   if (!trackName && !artistName) {
-    songCell.textContent = "Unknown song"
-  } else if (trackName || artistName) {
-    songCell.textContent = trackName;
-
-    songCell.appendChild(document.createElement("br"));
-
-    const artist = document.createElement("span");
-    artist.classList.add("band-name");
-    artist.textContent = artistName;
-    songCell.appendChild(artist);
+    songCell.textContent = "Unknown song";
+    return songCell;
   }
+
+  const songLink = document.createElement("a");
+  songLink.classList.add("a-link");
+  songLink.href = "#";
+  songLink.textContent = trackName;
+
+  songCell.appendChild(songLink);
+
+  songCell.appendChild(document.createElement("br"));
+
+  const artistLink = document.createElement("a");
+  artistLink.classList.add("a-link");
+  artistLink.href = "#";
+
+  const artist = document.createElement("span");
+  artist.classList.add("band-name");
+  artist.textContent = artistName;
+  artistLink.appendChild(artist);
+  songCell.appendChild(artistLink);
 
   return songCell;
 };
@@ -76,6 +88,31 @@ const createTrackRow = ({
     if (i !== 1) {
       cell.classList.add("album-cell");
       cell.textContent = rowInfo[i];
+    }
+
+    if (i === 3) {
+      const buttonLikedSong = document.createElement("button");
+      buttonLikedSong.classList.add("button-table");
+      buttonLikedSong.setAttribute("title", "Add to liked songs");
+      buttonLikedSong.innerHTML = `<span class="material-symbols-outlined">add_circle</span>`;
+
+      const durationWrapper = document.createElement("div");
+      durationWrapper.classList.add("duration-container");
+
+      const durationText = document.createElement("span");
+      durationText.textContent = rowInfo[i];
+
+      const buttonOptionsSong = document.createElement("button");
+      buttonOptionsSong.classList.add("button-table");
+      buttonOptionsSong.setAttribute("title", "More options");
+      buttonOptionsSong.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
+
+      durationWrapper.appendChild(buttonLikedSong);
+      durationWrapper.appendChild(durationText);
+      durationWrapper.appendChild(buttonOptionsSong);
+
+      cell.textContent = "";
+      cell.appendChild(durationWrapper);
     }
 
     row.appendChild(cell);
@@ -239,16 +276,19 @@ const artistPage = () => {
     //Album library button
     const libraryButton = document.createElement("button");
     libraryButton.classList.add("album-library-button");
+    libraryButton.setAttribute("title", "Save to your library");
     libraryButton.innerHTML = `<span class="material-symbols-outlined">add_circle</span>`;
     albumDetails.appendChild(libraryButton);
     //Album download button
     const downloadButton = document.createElement("button");
     downloadButton.classList.add("album-download-button");
+    downloadButton.setAttribute("title", "Download");
     downloadButton.innerHTML = `<span class="material-symbols-outlined">enable</span>`;
     albumDetails.appendChild(downloadButton);
     //Album 'more options' button
     const optionsButton = document.createElement("button");
     optionsButton.classList.add("album-options-button");
+    optionsButton.setAttribute("title", "More options");
     optionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
     albumDetails.appendChild(optionsButton);
 
