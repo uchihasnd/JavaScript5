@@ -6,18 +6,35 @@ const createTableHeaders = () => {
   const thead = document.createElement("thead");
   thead.classList.add("header-table");
   const headerRow = document.createElement("tr");
-  const headers = ["#", "Title", "Plays", "Duration"];
-
   headerRow.classList.add("header-table");
+
+  const headers = [
+    { header: "trackNumber", cellContent: "#" },
+    { header: "title", cellContent: "Title" },
+    { header: "plays", cellContent: "Plays" },
+    {
+      header: "duration",
+      cellContent: `<span class="material-symbols-outlined icon-header">schedule</span>`,
+    },
+  ];
 
   for (let i = 0; i < headers.length; i++) {
     const th = document.createElement("th");
     th.classList.add("table-header-cell");
-    th.textContent = headers[i];
+    th.innerHTML = headers[i].cellContent;
     headerRow.appendChild(th);
   }
   thead.appendChild(headerRow);
   return thead;
+};
+
+//Function to create a cell with a single element inside
+const createOneElementCell = (info) => {
+  const cell = document.createElement("td");
+  cell.classList.add("album-cell");
+  cell.textContent = info;
+
+  return cell;
 };
 
 //Function to insert the name of the song and/or artist
@@ -52,6 +69,39 @@ const createSongArtistCell = (trackName, artistName) => {
   return songCell;
 };
 
+const createThreeElementsCell = (duration) => {
+  const cellDuration = document.createElement("td");
+  cellDuration.classList.add("album-cell");
+
+  //Container for the 3 elements
+  const durationContainer = document.createElement("div");
+  durationContainer.classList.add("duration-container");
+
+  //Liked song button
+  const buttonLikedSong = document.createElement("button");
+  buttonLikedSong.classList.add("button-table");
+  buttonLikedSong.setAttribute("title", "Add to liked songs");
+  buttonLikedSong.innerHTML = `<span class="material-symbols-outlined">add_circle</span>`;
+
+  //Duration
+  const durationText = document.createElement("span");
+  durationText.textContent = duration;
+
+  //More options button
+  const buttonOptionsSong = document.createElement("button");
+  buttonOptionsSong.classList.add("button-table");
+  buttonOptionsSong.setAttribute("title", "More options");
+  buttonOptionsSong.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
+
+  durationContainer.appendChild(buttonLikedSong);
+  durationContainer.appendChild(durationText);
+  durationContainer.appendChild(buttonOptionsSong);
+
+  cellDuration.appendChild(durationContainer);
+
+  return cellDuration;
+};
+
 //Function to create each row of the table with the track number, name of the song, playcount and duration
 const createTrackRow = ({
   trackNumber,
@@ -63,15 +113,16 @@ const createTrackRow = ({
   const { totalMilliseconds } = duration;
   const { minutes, seconds } = convertMilliseconds(totalMilliseconds);
 
-  const rowInfo = [
-    trackNumber,
-    trackName,
-    parseInt(playcount).toLocaleString(),
-    `${minutes}:${seconds}`,
-  ];
+  const formattedDuration = `${minutes}:${seconds}`;
 
-  const row = document.createElement("tr");
-  row.classList.add("row-album");
+  const rowInfo = [
+    {
+      trackNumber,
+      trackName,
+      playcount: parseInt(playcount).toLocaleString(),
+      duration: `${minutes}:${seconds}`,
+    },
+  ];
 
   const [
     {
@@ -79,43 +130,21 @@ const createTrackRow = ({
     },
   ] = artists.items;
 
+  const row = document.createElement("tr");
+  row.classList.add("row-album");
+
   for (let i = 0; i < rowInfo.length; i++) {
-    let cell =
-      i === 1
-        ? createSongArtistCell(trackName, artistName)
-        : document.createElement("td");
+    const cellNumberTrack = createOneElementCell(trackNumber);
+    row.appendChild(cellNumberTrack);
 
-    if (i !== 1) {
-      cell.classList.add("album-cell");
-      cell.textContent = rowInfo[i];
-    }
+    const songArtistCell = createSongArtistCell(trackName, artistName);
+    row.appendChild(songArtistCell);
 
-    if (i === 3) {
-      const buttonLikedSong = document.createElement("button");
-      buttonLikedSong.classList.add("button-table");
-      buttonLikedSong.setAttribute("title", "Add to liked songs");
-      buttonLikedSong.innerHTML = `<span class="material-symbols-outlined">add_circle</span>`;
+    const playcountCell = createOneElementCell(playcount);
+    row.appendChild(playcountCell);
 
-      const durationWrapper = document.createElement("div");
-      durationWrapper.classList.add("duration-container");
-
-      const durationText = document.createElement("span");
-      durationText.textContent = rowInfo[i];
-
-      const buttonOptionsSong = document.createElement("button");
-      buttonOptionsSong.classList.add("button-table");
-      buttonOptionsSong.setAttribute("title", "More options");
-      buttonOptionsSong.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
-
-      durationWrapper.appendChild(buttonLikedSong);
-      durationWrapper.appendChild(durationText);
-      durationWrapper.appendChild(buttonOptionsSong);
-
-      cell.textContent = "";
-      cell.appendChild(durationWrapper);
-    }
-
-    row.appendChild(cell);
+    const durationCell = createThreeElementsCell(formattedDuration);
+    row.appendChild(durationCell);
   }
 
   return row;
