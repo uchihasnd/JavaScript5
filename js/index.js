@@ -27,6 +27,22 @@ const createTableHeaders = () => {
   thead.appendChild(headerRow);
   return thead;
 };
+//Function for the trackNumber and playButton
+const createTrackNumber = (number, trackName) => {
+  const cellTrack = document.createElement("td");
+  cellTrack.classList.add("album-cell", "track-cell");
+
+  const spanNumber = document.createElement("span");
+  spanNumber.classList.add("track-number");
+  spanNumber.textContent = number;
+  cellTrack.appendChild(spanNumber);
+  const buttonPlaySong = document.createElement("button");
+  buttonPlaySong.classList.add("small-icon", "button-table", "tooltip");
+  buttonPlaySong.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
+  cellTrack.appendChild(buttonPlaySong)
+
+  return cellTrack;
+};
 
 //Function to create a cell with a single element inside
 const createOneElementCell = (info) => {
@@ -69,7 +85,7 @@ const createSongArtistCell = (trackName, artistName) => {
   return songCell;
 };
 
-const createThreeElementsCell = (duration) => {
+const createThreeElementsCell = (duration, trackName) => {
   const cellDuration = document.createElement("td");
   cellDuration.classList.add("album-cell");
 
@@ -89,9 +105,13 @@ const createThreeElementsCell = (duration) => {
 
   //More options button
   const buttonOptionsSong = document.createElement("button");
-  buttonOptionsSong.classList.add("button-table");
-  buttonOptionsSong.setAttribute("title", "More options");
+  buttonOptionsSong.classList.add("button-table", "tooltip");
   buttonOptionsSong.innerHTML = `<span class="material-symbols-outlined small-icon">more_horiz</span>`;
+  //Tooltip for the button
+  const tooltipSong = document.createElement("span");
+  tooltipSong.classList.add("tooltip-text");
+  tooltipSong.textContent = `More options for ${trackName}`;
+  buttonOptionsSong.appendChild(tooltipSong);
 
   durationContainer.appendChild(buttonLikedSong);
   durationContainer.appendChild(durationText);
@@ -134,7 +154,7 @@ const createTrackRow = ({
   row.classList.add("row-album");
 
   for (let i = 0; i < rowInfo.length; i++) {
-    const cellNumberTrack = createOneElementCell(trackNumber);
+    const cellNumberTrack = createTrackNumber(trackNumber, trackName);
     cellNumberTrack.classList.add("playButtonHover");
     row.appendChild(cellNumberTrack);
 
@@ -144,7 +164,7 @@ const createTrackRow = ({
     const playcountCell = createOneElementCell(playcount);
     row.appendChild(playcountCell);
 
-    const durationCell = createThreeElementsCell(formattedDuration);
+    const durationCell = createThreeElementsCell(formattedDuration, trackName);
     row.appendChild(durationCell);
   }
 
@@ -240,12 +260,22 @@ const artistPage = () => {
   divFollow.appendChild(buttonFollow);
   //Button more options
   const moreOptionsButton = document.createElement("button");
-  moreOptionsButton.classList.add("album-button-details", "divFollow-element", "scale");
+  moreOptionsButton.classList.add(
+    "album-button-details",
+    "divFollow-element",
+    "scale",
+    "tooltip"
+  );
   moreOptionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
+  //Tooltip for the button
+  const tooltipText = document.createElement("span");
+  tooltipText.classList.add("tooltip-text");
+  tooltipText.textContent = `More options for ${artistName}`;
+  moreOptionsButton.appendChild(tooltipText);
   divFollow.appendChild(moreOptionsButton);
 
   body.appendChild(divFollow);
-//Fixed div
+  //Fixed div
   const divFixed = document.createElement("div");
   divFixed.id = "divFixed";
   divFixed.classList.add("div-play-fixed", "div-fixed");
@@ -266,7 +296,7 @@ const artistPage = () => {
 
   divFixed.appendChild(artistFixed);
 
-  window.addEventListener('scroll', function() {
+  window.addEventListener("scroll", function () {
     const element = document.getElementById("divFixed");
 
     if (window.scrollY > 450) {
@@ -350,9 +380,13 @@ const artistPage = () => {
     albumDetails.appendChild(downloadButton);
     //Album 'more options' button
     const optionsButton = document.createElement("button");
-    optionsButton.classList.add("album-button-details", "scale");
-    optionsButton.setAttribute("title", "More options");
+    optionsButton.classList.add("album-button-details", "scale", "tooltip");
     optionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
+    //Tooltip for the 'more options' button
+    const tooltipAlbum = document.createElement("span");
+    tooltipAlbum.classList.add("tooltip-text");
+    tooltipAlbum.textContent = `More options for ${albumName}`;
+    optionsButton.appendChild(tooltipAlbum);
     albumDetails.appendChild(optionsButton);
 
     albumInfo.appendChild(createAlbumTable(tracks));
