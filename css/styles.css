@@ -4,6 +4,7 @@
   --gray: #b3b3b3;
   --verified-icon: #4cb3ff;
   --button-primary: #1ed760;
+  --button-primary-hover: #3be477;
   --font-size-small: 14px;
   --font-size-big: 28px;
   --font-size-main-title: 60px;
@@ -47,6 +48,7 @@
 
 .info-header-text {
   font-size: var(--font-size-small);
+  font-weight: 600;
 }
 
 .verified-icon {
@@ -57,15 +59,34 @@
   font-variation-settings: "FILL" 1;
 }
 
+.div-fixed{
+  position: fixed;
+  top: 0;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.artist-fixed {
+  font-size: var(--font-size-big);
+  font-weight: 700;
+}
+
 /* Play all albums button, follow button */
-.div-play-follow {
+.div-play-follow,
+.div-play-fixed {
   align-items: center;
   background-color: var(--background);
   display: flex;
   flex-direction: row;
+}
+
+.div-play-follow {
   padding: 20px;
-  position: sticky;
-  top: 0;
+}
+
+.div-play-fixed {
+  padding: 10px 20px;
 }
 
 .button-play-all {
@@ -75,9 +96,17 @@
   padding: 10px;
 }
 
+.button-play-all:hover {
+  background-color: var(--button-primary-hover);
+}
+
 .divFollow-element {
   margin-right: 20px;
   cursor: pointer;
+}
+
+.scale:hover {
+  transform: scale(1.04);
 }
 
 .button-follow {
@@ -88,7 +117,11 @@
   border: solid 1px;
   color: var(--white);
   font-size: 12px;
-  padding: 5px 10px;
+  padding: 10px 20px;
+}
+
+.button-follow:hover{
+  border: 1px solid var(--white);
 }
 
 /* Album information */
@@ -163,16 +196,18 @@
   transform: scale(1.04);
 }
 
-.album-library-button,
-.album-download-button,
-.album-options-button {
+.album-button-details {
   background: none;
   border-radius: 50%;
   border: none;
-  color: var(--white);
+  color: var(--gray);
   cursor: pointer;
   margin: 0 5px;
   padding: 0;
+}
+
+.album-button-details:hover {
+  color: var(--white);
 }
 
 /* Table */
@@ -250,4 +285,14 @@
   font-size: var(--font-size-small) !important;
   text-align: center;
   width: 100%;
+}
+
+.small-icon {
+  font-size: 18px!important;
+  color: var(--gray);
+}
+
+.small-icon:hover {
+  color: var(--white);
+  transform: scale(1.04);
 }

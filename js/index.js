@@ -81,7 +81,7 @@ const createThreeElementsCell = (duration) => {
   const buttonLikedSong = document.createElement("button");
   buttonLikedSong.classList.add("button-table");
   buttonLikedSong.setAttribute("title", "Add to liked songs");
-  buttonLikedSong.innerHTML = `<span class="material-symbols-outlined">add_circle</span>`;
+  buttonLikedSong.innerHTML = `<span class="material-symbols-outlined small-icon">add_circle</span>`;
 
   //Duration
   const durationText = document.createElement("span");
@@ -91,7 +91,7 @@ const createThreeElementsCell = (duration) => {
   const buttonOptionsSong = document.createElement("button");
   buttonOptionsSong.classList.add("button-table");
   buttonOptionsSong.setAttribute("title", "More options");
-  buttonOptionsSong.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
+  buttonOptionsSong.innerHTML = `<span class="material-symbols-outlined small-icon">more_horiz</span>`;
 
   durationContainer.appendChild(buttonLikedSong);
   durationContainer.appendChild(durationText);
@@ -135,6 +135,7 @@ const createTrackRow = ({
 
   for (let i = 0; i < rowInfo.length; i++) {
     const cellNumberTrack = createOneElementCell(trackNumber);
+    cellNumberTrack.classList.add("playButtonHover");
     row.appendChild(cellNumberTrack);
 
     const songArtistCell = createSongArtistCell(trackName, artistName);
@@ -227,22 +228,55 @@ const artistPage = () => {
   buttonPlayAll.classList.add(
     "button-play-all",
     "filled-icon",
-    "divFollow-element"
+    "divFollow-element",
+    "scale"
   );
   buttonPlayAll.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
   divFollow.appendChild(buttonPlayAll);
   //Button follow artist
   const buttonFollow = document.createElement("button");
-  buttonFollow.classList.add("button-follow", "divFollow-element");
+  buttonFollow.classList.add("button-follow", "divFollow-element", "scale");
   buttonFollow.textContent = "Follow";
   divFollow.appendChild(buttonFollow);
   //Button more options
   const moreOptionsButton = document.createElement("button");
-  moreOptionsButton.classList.add("album-options-button", "divFollow-element");
+  moreOptionsButton.classList.add("album-button-details", "divFollow-element", "scale");
   moreOptionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
   divFollow.appendChild(moreOptionsButton);
 
   body.appendChild(divFollow);
+//Fixed div
+  const divFixed = document.createElement("div");
+  divFixed.id = "divFixed";
+  divFixed.classList.add("div-play-fixed", "div-fixed");
+
+  const buttonPlayAllFixed = document.createElement("button");
+  buttonPlayAllFixed.classList.add(
+    "button-play-all",
+    "filled-icon",
+    "divFollow-element",
+    "scale"
+  );
+  buttonPlayAllFixed.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
+  divFixed.appendChild(buttonPlayAllFixed);
+
+  const artistFixed = document.createElement("span");
+  artistFixed.classList.add("artist-fixed");
+  artistFixed.textContent = artistName;
+
+  divFixed.appendChild(artistFixed);
+
+  window.addEventListener('scroll', function() {
+    const element = document.getElementById("divFixed");
+
+    if (window.scrollY > 450) {
+      element.style.opacity = "1";
+    } else {
+      element.style.opacity = "0";
+    }
+  });
+
+  body.appendChild(divFixed);
 
   //Container for the albums
   const albumContainer = document.createElement("div");
@@ -304,19 +338,19 @@ const artistPage = () => {
     albumDetails.appendChild(playButton);
     //Album library button
     const libraryButton = document.createElement("button");
-    libraryButton.classList.add("album-library-button");
+    libraryButton.classList.add("album-button-details", "scale");
     libraryButton.setAttribute("title", "Save to your library");
     libraryButton.innerHTML = `<span class="material-symbols-outlined">add_circle</span>`;
     albumDetails.appendChild(libraryButton);
     //Album download button
     const downloadButton = document.createElement("button");
-    downloadButton.classList.add("album-download-button");
+    downloadButton.classList.add("album-button-details", "scale");
     downloadButton.setAttribute("title", "Download");
     downloadButton.innerHTML = `<span class="material-symbols-outlined">enable</span>`;
     albumDetails.appendChild(downloadButton);
     //Album 'more options' button
     const optionsButton = document.createElement("button");
-    optionsButton.classList.add("album-options-button");
+    optionsButton.classList.add("album-button-details", "scale");
     optionsButton.setAttribute("title", "More options");
     optionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
     albumDetails.appendChild(optionsButton);
