@@ -1,6 +1,217 @@
 import { data } from "./data.js";
 import { convertMilliseconds } from "./millisecondsConverter.js";
 
+//Function to create the header of the page
+const createHeader = (artistUnion, verified, artistName, monthlyListeners) => {
+  const header = document.createElement("header");
+  const coverImageUrl = artistUnion.visuals.headerImage.sources[0].url;
+
+  header.style.backgroundImage = `url(${coverImageUrl})`;
+  header.style.backgroundSize = "cover";
+  header.style.backgroundPosition = "center";
+  header.classList.add("header-artist");
+  //Verified
+  const verifiedArtist = document.createElement("span");
+  verifiedArtist.classList.add("header-info");
+  //Veriffied Icon
+  const verifiedIcon = document.createElement("span");
+  verifiedIcon.classList.add(
+    "material-symbols-outlined",
+    "verified-icon",
+    "filled-icon"
+  );
+  verifiedIcon.textContent = "verified";
+  const text = document.createElement("span");
+  text.textContent = verified ? "Verified Artist" : "";
+  text.classList.add("info-header-text");
+  verifiedArtist.appendChild(verifiedIcon);
+  verifiedArtist.appendChild(text);
+  header.appendChild(verifiedArtist);
+
+  //Artist Name
+  const artistTitle = document.createElement("h1");
+  artistTitle.classList.add("artist-title", "header-info");
+  artistTitle.textContent = artistName;
+  header.appendChild(artistTitle);
+
+  //Monthly listeners
+  const listenersInfo = document.createElement("span");
+  listenersInfo.classList.add("header-info", "info-header-text");
+  listenersInfo.textContent = `${monthlyListeners.toLocaleString()} monthly listeners`;
+  header.appendChild(listenersInfo);
+
+  return header;
+};
+
+//Function to create the container with the play button, follow and more options
+const createContainerFollow = (artistName) => {
+  const divFollow = document.createElement("div");
+  divFollow.classList.add("div-play-follow");
+  //Button play
+  const buttonPlayAll = document.createElement("button");
+  buttonPlayAll.classList.add(
+    "button-play-all",
+    "filled-icon",
+    "divFollow-element",
+    "scale"
+  );
+  buttonPlayAll.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
+  divFollow.appendChild(buttonPlayAll);
+  //Button follow artist
+  const buttonFollow = document.createElement("button");
+  buttonFollow.classList.add("button-follow", "divFollow-element", "scale");
+  buttonFollow.textContent = "Follow";
+  divFollow.appendChild(buttonFollow);
+  //Button more options
+  const moreOptionsButton = document.createElement("button");
+  moreOptionsButton.classList.add(
+    "album-button-details",
+    "divFollow-element",
+    "scale",
+    "tooltip"
+  );
+  moreOptionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
+  //Tooltip for the button
+  const tooltipText = document.createElement("span");
+  tooltipText.classList.add("tooltip-text");
+  tooltipText.textContent = `More options for ${artistName}`;
+  moreOptionsButton.appendChild(tooltipText);
+  divFollow.appendChild(moreOptionsButton);
+
+  return divFollow;
+};
+
+//Function to create the fixed div when scrolling down
+
+const fixedDiv = (artistName) => {
+  const divFixed = document.createElement("div");
+  divFixed.id = "divFixed";
+  divFixed.classList.add("div-play-fixed", "div-fixed");
+
+  const buttonPlayAllFixed = document.createElement("button");
+  buttonPlayAllFixed.classList.add(
+    "button-play-all",
+    "filled-icon",
+    "divFollow-element",
+    "scale"
+  );
+  buttonPlayAllFixed.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
+  divFixed.appendChild(buttonPlayAllFixed);
+
+  const artistFixed = document.createElement("span");
+  artistFixed.classList.add("artist-fixed");
+  artistFixed.textContent = artistName;
+
+  divFixed.appendChild(artistFixed);
+
+  window.addEventListener("scroll", function () {
+    const element = document.getElementById("divFixed");
+
+    if (window.scrollY > 450) {
+      element.style.opacity = "1";
+    } else {
+      element.style.opacity = "0";
+    }
+  });
+
+  return divFixed;
+};
+
+const createAlbumButtons = (albumName) => {
+  const buttonContainer = document.createElement("div");
+  buttonContainer.classList.add("album-buttons-container");
+
+  //Album play button
+  const playButton = document.createElement("button");
+  playButton.classList.add("album-play-button", "filled-icon");
+  playButton.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
+  buttonContainer.appendChild(playButton);
+  //Album library button
+  const libraryButton = document.createElement("button");
+  libraryButton.classList.add("album-button-details", "scale");
+  libraryButton.setAttribute("title", "Save to your library");
+  libraryButton.innerHTML = `<span class="material-symbols-outlined">add_circle</span>`;
+  buttonContainer.appendChild(libraryButton);
+  //Album download button
+  const downloadButton = document.createElement("button");
+  downloadButton.classList.add("album-button-details", "scale");
+  downloadButton.setAttribute("title", "Download");
+  downloadButton.innerHTML = `<span class="material-symbols-outlined">enable</span>`;
+  buttonContainer.appendChild(downloadButton);
+  //Album 'more options' button
+  const optionsButton = document.createElement("button");
+  optionsButton.classList.add("album-button-details", "scale", "tooltip");
+  optionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
+  //Tooltip for the 'more options' button
+  const tooltipAlbum = document.createElement("span");
+  tooltipAlbum.classList.add("tooltip-text");
+  tooltipAlbum.textContent = `More options for ${albumName}`;
+  optionsButton.appendChild(tooltipAlbum);
+  buttonContainer.appendChild(optionsButton);
+
+  return buttonContainer;
+};
+
+//Function to create the container for the albums
+const createContainerAlbums = (albums) => {
+  const albumContainer = document.createElement("div");
+  albumContainer.classList.add("artist-container");
+
+  albums.items.forEach(({ releases }) => {
+    const { items } = releases;
+    const { name: albumName, coverArt, tracks, type, date } = items[0];
+
+    //Div container for the album
+    const albumInfo = document.createElement("div");
+    albumInfo.classList.add("album-info");
+
+    //Container for the image and details
+    const albumContent = document.createElement("div");
+    albumContent.classList.add("album-content");
+
+    //Div for the album img
+    const divAlbumInfo = document.createElement("div");
+    divAlbumInfo.classList.add("album-image-container");
+
+    const { url: coverUrl } = coverArt.sources[0];
+    const albumCover = document.createElement("img");
+    albumCover.src = coverUrl;
+    albumCover.setAttribute("alt", "Album cover");
+    albumCover.classList.add("cover-album");
+    divAlbumInfo.appendChild(albumCover);
+
+    albumContent.appendChild(divAlbumInfo);
+
+    //Div for album details
+    const albumDetails = document.createElement("div");
+    albumDetails.classList.add("album-details");
+
+    //Album title
+    const albumTitle = document.createElement("a");
+    albumTitle.classList.add("album-title");
+    albumTitle.textContent = albumName;
+    albumDetails.appendChild(albumTitle);
+
+    //Album details
+    const pDetails = document.createElement("p");
+    pDetails.classList.add("details");
+    const { year } = date;
+    const { totalCount } = tracks;
+    pDetails.textContent = `${type} • ${year} • ${totalCount} tracks`;
+    albumDetails.appendChild(pDetails);
+
+    albumContent.appendChild(albumDetails);
+
+    albumInfo.appendChild(albumContent);
+
+    albumInfo.appendChild(createAlbumTable(tracks));
+    albumContainer.appendChild(albumInfo);
+    albumDetails.appendChild(createAlbumButtons(albumName));
+  });
+
+  return albumContainer;
+};
+
 //Function to create table headers
 const createTableHeaders = () => {
   const thead = document.createElement("thead");
@@ -18,15 +229,16 @@ const createTableHeaders = () => {
     },
   ];
 
-  for (let i = 0; i < headers.length; i++) {
+  headers.forEach(({ cellContent }) => {
     const th = document.createElement("th");
     th.classList.add("table-header-cell");
-    th.innerHTML = headers[i].cellContent;
+    th.innerHTML = cellContent;
     headerRow.appendChild(th);
-  }
+  });
   thead.appendChild(headerRow);
   return thead;
 };
+
 //Function for the trackNumber and playButton
 const createTrackNumber = (number, trackName) => {
   const cellTrack = document.createElement("td");
@@ -39,7 +251,7 @@ const createTrackNumber = (number, trackName) => {
   const buttonPlaySong = document.createElement("button");
   buttonPlaySong.classList.add("small-icon", "button-table", "tooltip");
   buttonPlaySong.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
-  cellTrack.appendChild(buttonPlaySong)
+  cellTrack.appendChild(buttonPlaySong);
 
   return cellTrack;
 };
@@ -153,7 +365,7 @@ const createTrackRow = ({
   const row = document.createElement("tr");
   row.classList.add("row-album");
 
-  for (let i = 0; i < rowInfo.length; i++) {
+  rowInfo.forEach(() => {
     const cellNumberTrack = createTrackNumber(trackNumber, trackName);
     cellNumberTrack.classList.add("playButtonHover");
     row.appendChild(cellNumberTrack);
@@ -166,7 +378,7 @@ const createTrackRow = ({
 
     const durationCell = createThreeElementsCell(formattedDuration, trackName);
     row.appendChild(durationCell);
-  }
+  });
 
   return row;
 };
@@ -201,197 +413,19 @@ const artistPage = () => {
   const { monthlyListeners } = stats;
   const { albums } = discography;
 
-  const header = document.createElement("header");
-  const coverImageUrl = artistUnion.visuals.headerImage.sources[0].url;
-
-  header.style.backgroundImage = `url(${coverImageUrl})`;
-  header.style.backgroundSize = "cover";
-  header.style.backgroundPosition = "center";
-  header.classList.add("header-artist");
-  //Verified
-  const verifiedArtist = document.createElement("span");
-  verifiedArtist.classList.add("header-info");
-  //Veriffied Icon
-  const verifiedIcon = document.createElement("span");
-  verifiedIcon.classList.add(
-    "material-symbols-outlined",
-    "verified-icon",
-    "filled-icon"
+  //Header
+  body.appendChild(
+    createHeader(artistUnion, verified, artistName, monthlyListeners)
   );
-  verifiedIcon.textContent = "verified";
-  const text = document.createElement("span");
-  text.textContent = verified ? " Verified Artist" : " Unverified";
-  text.classList.add("info-header-text");
-  verifiedArtist.appendChild(verifiedIcon);
-  verifiedArtist.appendChild(text);
-  header.appendChild(verifiedArtist);
 
-  //Artist Name
-  const artistTitle = document.createElement("h1");
-  artistTitle.classList.add("artist-title", "header-info");
-  artistTitle.textContent = artistName;
-  header.appendChild(artistTitle);
+  //Container with play, follow, and more options button
+  body.appendChild(createContainerFollow(artistName));
 
-  //Monthly listeners
-  const listenersInfo = document.createElement("span");
-  listenersInfo.classList.add("header-info", "info-header-text");
-  listenersInfo.textContent = `${monthlyListeners.toLocaleString()} monthly listeners`;
-  header.appendChild(listenersInfo);
-
-  body.appendChild(header);
-
-  //Container for the play button, the follow button
-  const divFollow = document.createElement("div");
-  divFollow.classList.add("div-play-follow");
-  //Button play
-  const buttonPlayAll = document.createElement("button");
-  buttonPlayAll.classList.add(
-    "button-play-all",
-    "filled-icon",
-    "divFollow-element",
-    "scale"
-  );
-  buttonPlayAll.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
-  divFollow.appendChild(buttonPlayAll);
-  //Button follow artist
-  const buttonFollow = document.createElement("button");
-  buttonFollow.classList.add("button-follow", "divFollow-element", "scale");
-  buttonFollow.textContent = "Follow";
-  divFollow.appendChild(buttonFollow);
-  //Button more options
-  const moreOptionsButton = document.createElement("button");
-  moreOptionsButton.classList.add(
-    "album-button-details",
-    "divFollow-element",
-    "scale",
-    "tooltip"
-  );
-  moreOptionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
-  //Tooltip for the button
-  const tooltipText = document.createElement("span");
-  tooltipText.classList.add("tooltip-text");
-  tooltipText.textContent = `More options for ${artistName}`;
-  moreOptionsButton.appendChild(tooltipText);
-  divFollow.appendChild(moreOptionsButton);
-
-  body.appendChild(divFollow);
   //Fixed div
-  const divFixed = document.createElement("div");
-  divFixed.id = "divFixed";
-  divFixed.classList.add("div-play-fixed", "div-fixed");
-
-  const buttonPlayAllFixed = document.createElement("button");
-  buttonPlayAllFixed.classList.add(
-    "button-play-all",
-    "filled-icon",
-    "divFollow-element",
-    "scale"
-  );
-  buttonPlayAllFixed.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
-  divFixed.appendChild(buttonPlayAllFixed);
-
-  const artistFixed = document.createElement("span");
-  artistFixed.classList.add("artist-fixed");
-  artistFixed.textContent = artistName;
-
-  divFixed.appendChild(artistFixed);
-
-  window.addEventListener("scroll", function () {
-    const element = document.getElementById("divFixed");
-
-    if (window.scrollY > 450) {
-      element.style.opacity = "1";
-    } else {
-      element.style.opacity = "0";
-    }
-  });
-
-  body.appendChild(divFixed);
+  body.appendChild(fixedDiv(artistName));
 
   //Container for the albums
-  const albumContainer = document.createElement("div");
-  albumContainer.classList.add("artist-container");
-
-  body.appendChild(albumContainer);
-
-  albums.items.forEach(({ releases }) => {
-    const { items } = releases;
-    const { name: albumName, coverArt, tracks, type, date } = items[0];
-
-    //Div container for the album
-    const albumInfo = document.createElement("div");
-    albumInfo.classList.add("album-info");
-
-    //Container for the image and details
-    const albumContent = document.createElement("div");
-    albumContent.classList.add("album-content");
-
-    //Div for the album img
-    const divAlbumInfo = document.createElement("div");
-    divAlbumInfo.classList.add("album-image-container");
-
-    const { url: coverUrl } = coverArt.sources[0];
-    const albumCover = document.createElement("img");
-    albumCover.src = coverUrl;
-    albumCover.setAttribute("alt", "Album cover");
-    albumCover.classList.add("cover-album");
-    divAlbumInfo.appendChild(albumCover);
-
-    albumContent.appendChild(divAlbumInfo);
-
-    //Div for album details
-    const albumDetails = document.createElement("div");
-    albumDetails.classList.add("album-details");
-
-    //Album title
-    const albumTitle = document.createElement("a");
-    albumTitle.classList.add("album-title");
-    albumTitle.textContent = albumName;
-    albumDetails.appendChild(albumTitle);
-
-    //Album details
-    const pDetails = document.createElement("p");
-    pDetails.classList.add("details");
-    const { year } = date;
-    const { totalCount } = tracks;
-    pDetails.textContent = `${type} • ${year} • ${totalCount} tracks`;
-    albumDetails.appendChild(pDetails);
-
-    albumContent.appendChild(albumDetails);
-
-    albumInfo.appendChild(albumContent);
-
-    //Album play button
-    const playButton = document.createElement("button");
-    playButton.classList.add("album-play-button", "filled-icon");
-    playButton.innerHTML = `<span class="material-symbols-outlined">play_arrow</span>`;
-    albumDetails.appendChild(playButton);
-    //Album library button
-    const libraryButton = document.createElement("button");
-    libraryButton.classList.add("album-button-details", "scale");
-    libraryButton.setAttribute("title", "Save to your library");
-    libraryButton.innerHTML = `<span class="material-symbols-outlined">add_circle</span>`;
-    albumDetails.appendChild(libraryButton);
-    //Album download button
-    const downloadButton = document.createElement("button");
-    downloadButton.classList.add("album-button-details", "scale");
-    downloadButton.setAttribute("title", "Download");
-    downloadButton.innerHTML = `<span class="material-symbols-outlined">enable</span>`;
-    albumDetails.appendChild(downloadButton);
-    //Album 'more options' button
-    const optionsButton = document.createElement("button");
-    optionsButton.classList.add("album-button-details", "scale", "tooltip");
-    optionsButton.innerHTML = `<span class="material-symbols-outlined">more_horiz</span>`;
-    //Tooltip for the 'more options' button
-    const tooltipAlbum = document.createElement("span");
-    tooltipAlbum.classList.add("tooltip-text");
-    tooltipAlbum.textContent = `More options for ${albumName}`;
-    optionsButton.appendChild(tooltipAlbum);
-    albumDetails.appendChild(optionsButton);
-
-    albumInfo.appendChild(createAlbumTable(tracks));
-    albumContainer.appendChild(albumInfo);
-  });
+  body.appendChild(createContainerAlbums(albums));
 };
 
 artistPage();
